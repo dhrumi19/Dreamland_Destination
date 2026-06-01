@@ -1,0 +1,95 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Complete Payment | Dreamland Destination</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'CSS/style.css' %}">
+</head>
+
+<body>
+
+<div class="payment-wrapper">
+<div class="payment-card animate-fadeInUp">
+
+<!-- Header -->
+<div class="text-center mb-4">
+<div style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--primary-light));display:flex;align-items:center;justify-content:center;margin:0 auto 16px;color:#fff;font-size:1.4rem;">
+<i class="fas fa-lock"></i>
+</div>
+<h3 style="font-weight:700; margin-bottom:4px;">Complete Your Payment</h3>
+<p style="color:var(--text-light); font-size:0.9rem;">Dreamland Destination — Secure Checkout</p>
+</div>
+
+<!-- Order Summary -->
+<div style="background:var(--off-white); padding:20px; border-radius:var(--radius-md); margin-bottom:24px; border:1px solid rgba(0,0,0,0.05);">
+<div style="display:flex; align-items:center; gap:12px; margin-bottom:12px;">
+<i class="fas fa-box-open" style="color:var(--accent); font-size:1.1rem;"></i>
+<div>
+<div style="font-weight:600; font-size:0.95rem;">{{ booking.package.package_name }}</div>
+<div style="color:var(--text-light); font-size:0.8rem;">{{ booking.package.destination.destination_name }}</div>
+</div>
+</div>
+
+<div style="display:flex; justify-content:space-between; font-size:0.85rem; color:var(--text-light); margin-bottom:4px;">
+<span><i class="fas fa-calendar-alt me-1"></i>Travel Date</span>
+<span style="font-weight:500; color:var(--text);">{{ booking.travel_date }}</span>
+</div>
+
+<div style="display:flex; justify-content:space-between; font-size:0.85rem; color:var(--text-light); margin-bottom:12px;">
+<span><i class="fas fa-users me-1"></i>Travelers</span>
+<span style="font-weight:500; color:var(--text);">{{ booking.total_people }}</span>
+</div>
+
+<hr style="border-color:rgba(0,0,0,0.08); margin:12px 0;">
+
+<div style="display:flex; justify-content:space-between; align-items:center;">
+<span style="font-weight:700; font-size:1rem;">Total Amount</span>
+<span style="font-family:'Poppins',sans-serif; font-weight:800; font-size:1.4rem; color:var(--accent);">₹{{ booking.total_price }}</span>
+</div>
+</div>
+
+<!-- Trust Badge -->
+<div style="display:flex; align-items:center; gap:8px; justify-content:center; margin-bottom:20px; color:var(--success); font-size:0.8rem; font-weight:500;">
+<i class="fas fa-shield-halved"></i>
+<span>256-bit SSL Encrypted | 100% Secure Payment</span>
+</div>
+
+<!-- Pay Button -->
+<button id="rzp-button" class="gradient-btn gradient-btn-success btn-block" style="padding:15px; font-size:1.05rem;">
+<i class="fas fa-lock me-2"></i>Pay ₹{{ booking.total_price }}
+</button>
+
+<a href="/" class="gradient-btn gradient-btn-outline btn-block mt-3" style="font-size:0.85rem; padding:10px; border-color:var(--gray); color:var(--gray);">
+Cancel & Return Home
+</a>
+
+</div>
+</div>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+var options = {
+  "key": "{{ razorpay_key }}",
+  "amount": "{{ booking.total_price|floatformat:0 }}00",
+  "currency": "INR",
+  "name": "Dreamland Destination",
+  "description": "Travel Package Payment",
+  handler: function (response){
+    window.location.href = "/success/?booking_id={{ booking.id }}"
+  },
+  "theme": { "color": "#FF6B35" }
+};
+var rzp = new Razorpay(options);
+document.getElementById("rzp-button").onclick = function(e){
+  rzp.open();
+  e.preventDefault();
+}
+</script>
+
+</body>
+</html>

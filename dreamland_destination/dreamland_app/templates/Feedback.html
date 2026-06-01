@@ -1,0 +1,99 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Give Feedback | Dreamland Destination</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'CSS/style.css' %}">
+
+<style>
+.star-rating { direction: rtl; display: inline-flex; font-size: 2rem; gap: 4px; }
+.star-rating input { display: none; }
+.star-rating label { color: var(--light-gray); cursor: pointer; transition: var(--transition); }
+.star-rating input:checked ~ label { color: var(--gold); }
+.star-rating label:hover, .star-rating label:hover ~ label { color: var(--gold); transform: scale(1.1); }
+</style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg premium-navbar py-2">
+<div class="container">
+<a class="navbar-brand" href="/"><span class="brand-icon">✈</span> Dreamland</a>
+<div class="d-flex gap-2">
+<a href="/" class="nav-btn nav-btn-outline">Home</a>
+<a href="/track-booking/" class="nav-btn nav-btn-accent">Track Booking</a>
+</div>
+</div>
+</nav>
+
+<!-- FEEDBACK FORM -->
+<section class="py-5" style="background:var(--off-white); min-height:80vh;">
+<div class="container">
+
+<div class="section-header animate-fadeInUp">
+<h2><i class="fas fa-star me-2" style="color:var(--gold);"></i>Give Your Feedback</h2>
+<p>We'd love to hear about your experience</p>
+<div class="accent-line"></div>
+</div>
+
+<div class="row justify-content-center">
+<div class="col-md-6">
+<div class="glass-card animate-fadeInUp" style="padding:32px;">
+
+<!-- Booking Info -->
+<div style="background:var(--off-white); padding:16px; border-radius:var(--radius-md); margin-bottom:20px;">
+<h6 style="margin-bottom:4px; font-weight:600;">{{ booking.package.package_name }}</h6>
+<p style="color:var(--text-light); margin:0; font-size:0.85rem;">
+<i class="fas fa-map-marker-alt me-1" style="color:var(--accent);"></i>{{ booking.package.destination.destination_name }}
+</p>
+</div>
+
+<form method="post" class="premium-form">
+{% csrf_token %}
+
+<div class="mb-4 text-center">
+<label class="form-label d-block">Rate Your Experience</label>
+<div class="star-rating">
+<input type="radio" name="rating" value="5" id="s5"><label for="s5"><i class="fas fa-star"></i></label>
+<input type="radio" name="rating" value="4" id="s4"><label for="s4"><i class="fas fa-star"></i></label>
+<input type="radio" name="rating" value="3" id="s3"><label for="s3"><i class="fas fa-star"></i></label>
+<input type="radio" name="rating" value="2" id="s2"><label for="s2"><i class="fas fa-star"></i></label>
+<input type="radio" name="rating" value="1" id="s1"><label for="s1"><i class="fas fa-star"></i></label>
+</div>
+</div>
+
+<div class="mb-4">
+<label class="form-label">Your Feedback</label>
+<textarea name="comment" class="form-control" placeholder="Tell us about your experience..." rows="4" required></textarea>
+</div>
+
+<button class="gradient-btn gradient-btn-primary btn-block" style="padding:13px;">
+<i class="fas fa-paper-plane me-2"></i>Submit Feedback
+</button>
+
+</form>
+
+</div>
+</div>
+</div>
+
+</div>
+</section>
+
+<footer class="premium-footer">
+<div class="container">
+<div class="footer-bottom" style="margin-top:0;">
+<p class="mb-0">© 2026 Dreamland Destination. All Rights Reserved.</p>
+</div>
+</div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

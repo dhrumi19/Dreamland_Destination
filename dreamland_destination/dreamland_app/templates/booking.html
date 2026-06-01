@@ -1,0 +1,228 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Book Your Trip | Dreamland Destination</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'CSS/style.css' %}">
+
+<style>
+.booking-wrapper { max-width: 700px; margin: 0 auto; }
+.booking-header {
+  background: linear-gradient(135deg, var(--primary), var(--primary-light));
+  color: var(--white);
+  padding: 28px;
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  text-align: center;
+}
+.booking-header h3 { color: var(--white); margin-bottom: 4px; }
+.booking-header p { color: rgba(255,255,255,0.7); margin: 0; font-size: 0.9rem; }
+.booking-body {
+  background: var(--white);
+  padding: 32px;
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+}
+.price-summary {
+  background: linear-gradient(135deg, #f0f4ff, #eef1f8);
+  padding: 20px;
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(0,0,0,0.05);
+}
+.price-summary .total-label { font-weight: 600; color: var(--text); }
+.price-summary .total-amount {
+  font-family: 'Poppins', sans-serif;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--accent);
+}
+.seat-info {
+  background: var(--warning-light);
+  padding: 12px 16px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+.seat-info i { color: var(--warning); }
+</style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg premium-navbar py-2">
+<div class="container">
+<a class="navbar-brand" href="/"><span class="brand-icon">✈</span> Dreamland</a>
+<button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+<span class="navbar-toggler-icon"></span>
+</button>
+<div class="collapse navbar-collapse" id="navMenu">
+<ul class="navbar-nav mx-auto">
+<li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+<li class="nav-item"><a class="nav-link" href="/packages/">Packages</a></li>
+<li class="nav-item"><a class="nav-link active" href="/booking/">Book Now</a></li>
+<li class="nav-item"><a class="nav-link" href="/track-booking/">Track Booking</a></li>
+</ul>
+<div class="d-flex gap-2">
+{% if request.session.user_id %}
+<a href="/dashboard/" class="nav-btn nav-btn-outline"><i class="fas fa-tachometer-alt me-1"></i>Dashboard</a>
+<a href="/logout/" class="nav-btn nav-btn-accent">Logout</a>
+{% else %}
+<a href="/login/" class="nav-btn nav-btn-outline">Login</a>
+<a href="/signup/" class="nav-btn nav-btn-accent">Sign Up</a>
+{% endif %}
+</div>
+</div>
+</div>
+</nav>
+
+<!-- BOOKING FORM -->
+<section class="py-5" style="background: var(--off-white); min-height: 80vh;">
+<div class="container">
+<div class="booking-wrapper animate-fadeInUp">
+
+<div class="booking-header">
+<i class="fas fa-plane-departure" style="font-size:1.6rem; margin-bottom:8px;"></i>
+<h3>Book Your Dream Trip</h3>
+<p>Dreamland Destination</p>
+</div>
+
+<div class="booking-body premium-form">
+<form method="post">
+{% csrf_token %}
+
+<!-- Package -->
+<div class="mb-3">
+<label class="form-label"><i class="fas fa-box-open me-1" style="color:var(--accent);"></i>Select Package</label>
+<select name="package" id="package" class="form-select" required>
+<option value="">Choose a Package</option>
+{% for p in packages %}
+<option value="{{p.id}}" data-price="{{p.price}}" data-seats="{{p.total_seats}}"
+{% if selected_package and selected_package.id == p.id %}selected{% endif %}>
+{{p.package_name}} — ₹{{p.price}}
+</option>
+{% endfor %}
+</select>
+</div>
+
+<!-- Seat Info -->
+<div class="seat-info mb-3">
+<span><i class="fas fa-chair me-1"></i>Total Seats: <strong id="total_seats">0</strong></span>
+<span><i class="fas fa-check-circle me-1"></i>Available: <strong id="available_seats">0</strong></span>
+</div>
+
+<!-- Transport -->
+<div class="mb-3">
+<label class="form-label"><i class="fas fa-route me-1" style="color:var(--accent);"></i>Select Route</label>
+<select name="transport" class="form-select" required>
+<option value="">Choose Route</option>
+{% for t in transports %}
+<option value="{{t.id}}" data-price="{{t.price}}">
+{{t.transport_type}} : {{t.from_city}} → {{t.to_city}} (₹{{t.price}})
+</option>
+{% endfor %}
+</select>
+</div>
+
+<!-- Travel Date -->
+<div class="mb-3">
+<label class="form-label"><i class="fas fa-calendar-alt me-1" style="color:var(--accent);"></i>Travel Date</label>
+<input type="date" name="travel_date" class="form-control" required>
+</div>
+
+<!-- People -->
+<div class="mb-3">
+<label class="form-label"><i class="fas fa-users me-1" style="color:var(--accent);"></i>Number of Travelers</label>
+<input type="number" id="people" name="people" class="form-control" min="1" value="1">
+</div>
+
+<!-- Price Summary -->
+<div class="price-summary mb-4">
+<div class="d-flex justify-content-between align-items-center mb-2">
+<span class="total-label">Package + Transport:</span>
+<span>₹ <span id="package_price">0</span></span>
+</div>
+<hr style="margin:8px 0; border-color:rgba(0,0,0,0.1);">
+<div class="d-flex justify-content-between align-items-center">
+<span class="total-label">Total Amount:</span>
+<span class="total-amount">₹ <span id="total_price_text">0</span></span>
+</div>
+</div>
+
+<input type="hidden" name="total_price" id="total_price_input">
+
+<button type="submit" id="bookBtn" class="gradient-btn gradient-btn-primary btn-block" style="padding:14px; font-size:1rem;">
+<i class="fas fa-credit-card me-2"></i>Proceed to Payment
+</button>
+
+</form>
+
+<a href="/" class="gradient-btn gradient-btn-outline btn-block mt-3" style="font-size:0.9rem; padding:12px;">
+<i class="fas fa-arrow-left me-2"></i>Back to Home
+</a>
+
+</div>
+</div>
+</div>
+</section>
+
+<!-- FOOTER -->
+<footer class="premium-footer">
+<div class="container">
+<div class="footer-bottom" style="margin-top:0;">
+<p class="mb-0">© 2026 Dreamland Destination. All Rights Reserved.</p>
+</div>
+</div>
+</footer>
+
+<script>
+const packageSelect = document.getElementById("package");
+const transportSelect = document.querySelector("select[name='transport']");
+const peopleInput = document.getElementById("people");
+const packagePriceText = document.getElementById("package_price");
+const totalPriceText = document.getElementById("total_price_text");
+const totalPriceInput = document.getElementById("total_price_input");
+const totalSeatsText = document.getElementById("total_seats");
+const availableSeatsText = document.getElementById("available_seats");
+const bookBtn = document.getElementById("bookBtn");
+
+function calculatePrice(){
+  let selectedPackage = packageSelect.options[packageSelect.selectedIndex];
+  let selectedTransport = transportSelect.options[transportSelect.selectedIndex];
+  let packagePrice = parseFloat(selectedPackage.getAttribute("data-price")) || 0;
+  let transportPrice = parseFloat(selectedTransport.getAttribute("data-price")) || 0;
+  let seats = parseInt(selectedPackage.getAttribute("data-seats")) || 0;
+  let people = parseInt(peopleInput.value) || 1;
+  let total = (packagePrice + transportPrice) * people;
+
+  packagePriceText.innerText = packagePrice + transportPrice;
+  totalPriceText.innerText = total.toLocaleString('en-IN');
+  totalPriceInput.value = total;
+  totalSeatsText.innerText = seats;
+  availableSeatsText.innerText = seats;
+
+  if(seats <= 0){
+    bookBtn.disabled = true;
+    bookBtn.innerHTML = '<i class="fas fa-ban me-2"></i>Seats Full';
+  } else {
+    bookBtn.disabled = false;
+    bookBtn.innerHTML = '<i class="fas fa-credit-card me-2"></i>Proceed to Payment';
+  }
+}
+
+packageSelect.addEventListener("change", calculatePrice);
+transportSelect.addEventListener("change", calculatePrice);
+peopleInput.addEventListener("input", calculatePrice);
+window.onload = calculatePrice;
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

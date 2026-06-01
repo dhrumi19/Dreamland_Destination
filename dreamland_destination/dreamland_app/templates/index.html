@@ -1,0 +1,246 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dreamland Destination — Your Dream Trip Awaits</title>
+<meta name="description" content="Explore handpicked travel destinations and affordable packages. Book your dream vacation with Dreamland Destination.">
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'CSS/style.css' %}">
+</head>
+
+<body>
+
+<!-- ============ NAVBAR ============ -->
+<nav class="navbar navbar-expand-lg premium-navbar py-2">
+<div class="container">
+
+<a class="navbar-brand" href="/">
+<span class="brand-icon">✈</span> Dreamland
+</a>
+
+<button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+<span class="navbar-toggler-icon"></span>
+</button>
+
+<div class="collapse navbar-collapse" id="navMenu">
+<ul class="navbar-nav mx-auto mb-2 mb-lg-0">
+<li class="nav-item"><a class="nav-link active" href="/">Home</a></li>
+<li class="nav-item"><a class="nav-link" href="/destinations/">Destinations</a></li>
+<li class="nav-item"><a class="nav-link" href="/packages/">Packages</a></li>
+<li class="nav-item"><a class="nav-link" href="/booking/">Book Now</a></li>
+<li class="nav-item"><a class="nav-link" href="/track-booking/">Track Booking</a></li>
+</ul>
+
+<div class="d-flex gap-2">
+{% if request.session.user_id %}
+<a href="/dashboard/" class="nav-btn nav-btn-outline"><i class="fas fa-tachometer-alt me-1"></i>Dashboard</a>
+<a href="/logout/" class="nav-btn nav-btn-accent"><i class="fas fa-sign-out-alt me-1"></i>Logout</a>
+{% else %}
+<a href="/login/" class="nav-btn nav-btn-outline">Login</a>
+<a href="/signup/" class="nav-btn nav-btn-accent">Sign Up Free</a>
+{% endif %}
+</div>
+</div>
+
+</div>
+</nav>
+
+
+<!-- ============ HERO SECTION ============ -->
+<section class="hero-section" style="background-image:url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1920&q=80');">
+<div class="hero-content animate-fadeInUp">
+<h1>Discover Your Next <span>Adventure</span></h1>
+<p>Handpicked destinations, unbeatable prices, and unforgettable experiences. <br>Plan your dream vacation with Dreamland Destination.</p>
+<div class="d-flex gap-3 justify-content-center flex-wrap">
+<a href="/packages/" class="gradient-btn gradient-btn-primary"><i class="fas fa-compass me-2"></i>Explore Packages</a>
+<a href="/destinations/" class="gradient-btn gradient-btn-outline" style="border-color: #fff; color: #fff;"><i class="fas fa-map-marker-alt me-2"></i>View Destinations</a>
+</div>
+</div>
+</section>
+
+
+<!-- ============ POPULAR DESTINATIONS ============ -->
+<section class="py-5">
+<div class="container">
+
+<div class="section-header animate-fadeInUp">
+<h2>Popular Destinations</h2>
+<p>Explore our handpicked collection of the world's most stunning locations</p>
+<div class="accent-line"></div>
+</div>
+
+<div class="row g-4">
+{% for d in destinations %}
+<div class="col-lg-3 col-md-6 animate-fadeInUp delay-{{ forloop.counter }}">
+<div class="premium-card">
+<div class="card-img-wrapper">
+{% if d.image %}
+<img src="{{ d.image.url }}" alt="{{ d.destination_name }}">
+{% else %}
+<img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&q=80" alt="{{ d.destination_name }}">
+{% endif %}
+<span class="card-img-overlay-badge"><i class="fas fa-map-marker-alt me-1"></i>{{ d.location }}</span>
+<span class="card-img-price">From ₹{{ d.price }}</span>
+</div>
+<div class="card-content">
+<h5>{{ d.destination_name }}</h5>
+<p style="color:var(--text-light); font-size:0.9rem; margin-bottom:16px;">{{ d.description|truncatewords:12 }}</p>
+<a href="/packages/?destination={{ d.destination_name }}" class="gradient-btn gradient-btn-primary btn-block" style="font-size:0.85rem; padding:10px 20px;">
+<i class="fas fa-eye me-1"></i>View Packages
+</a>
+</div>
+</div>
+</div>
+{% endfor %}
+</div>
+
+</div>
+</section>
+
+
+<!-- ============ STATS COUNTER ============ -->
+<section class="stats-section">
+<div class="container">
+<div class="row">
+<div class="col-md-3 col-6">
+<div class="stat-item animate-fadeInUp">
+<div class="stat-number">500+</div>
+<div class="stat-label">Happy Travelers</div>
+</div>
+</div>
+<div class="col-md-3 col-6">
+<div class="stat-item animate-fadeInUp delay-1">
+<div class="stat-number">50+</div>
+<div class="stat-label">Destinations</div>
+</div>
+</div>
+<div class="col-md-3 col-6">
+<div class="stat-item animate-fadeInUp delay-2">
+<div class="stat-number">100+</div>
+<div class="stat-label">Tour Packages</div>
+</div>
+</div>
+<div class="col-md-3 col-6">
+<div class="stat-item animate-fadeInUp delay-3">
+<div class="stat-number">24/7</div>
+<div class="stat-label">Customer Support</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+
+<!-- ============ WHY CHOOSE US ============ -->
+<section class="py-5" style="background: var(--off-white);">
+<div class="container">
+
+<div class="section-header animate-fadeInUp">
+<h2>Why Choose Dreamland?</h2>
+<p>We make your travel dreams come true with excellence</p>
+<div class="accent-line"></div>
+</div>
+
+<div class="row g-4">
+<div class="col-lg-3 col-md-6 animate-fadeInUp delay-1">
+<div class="feature-card">
+<div class="feature-icon" style="background: linear-gradient(135deg, #3b82f6, #2563eb);">
+<i class="fas fa-globe-americas"></i>
+</div>
+<h5>Best Destinations</h5>
+<p>Handpicked locations curated by travel experts for the best experience.</p>
+</div>
+</div>
+<div class="col-lg-3 col-md-6 animate-fadeInUp delay-2">
+<div class="feature-card">
+<div class="feature-icon" style="background: linear-gradient(135deg, var(--accent), var(--accent-hover));">
+<i class="fas fa-tags"></i>
+</div>
+<h5>Best Price Guarantee</h5>
+<p>Affordable packages with no hidden charges. Travel within your budget.</p>
+</div>
+</div>
+<div class="col-lg-3 col-md-6 animate-fadeInUp delay-3">
+<div class="feature-card">
+<div class="feature-icon" style="background: linear-gradient(135deg, var(--gold), #e5a320);">
+<i class="fas fa-star"></i>
+</div>
+<h5>Trusted by Travelers</h5>
+<p>Thousands of happy customers with 5-star reviews and ratings.</p>
+</div>
+</div>
+<div class="col-lg-3 col-md-6 animate-fadeInUp delay-4">
+<div class="feature-card">
+<div class="feature-icon" style="background: linear-gradient(135deg, #10b981, #059669);">
+<i class="fas fa-headset"></i>
+</div>
+<h5>24/7 Support</h5>
+<p>Round-the-clock travel assistance whenever you need it.</p>
+</div>
+</div>
+</div>
+
+</div>
+</section>
+
+
+<!-- ============ CTA SECTION ============ -->
+<section class="py-5" style="background: linear-gradient(135deg, var(--accent), var(--accent-hover));">
+<div class="container text-center">
+<h2 style="color:#fff; font-weight:700; margin-bottom:12px;" class="animate-fadeInUp">Ready for Your Dream Vacation?</h2>
+<p style="color:rgba(255,255,255,0.9); font-size:1.1rem; margin-bottom:24px;" class="animate-fadeInUp delay-1">Browse our curated packages and book your next adventure today.</p>
+<a href="/packages/" class="gradient-btn gradient-btn-secondary animate-fadeInUp delay-2" style="padding:14px 36px; font-size:1rem;">
+<i class="fas fa-suitcase-rolling me-2"></i>Browse Packages
+</a>
+</div>
+</section>
+
+
+<!-- ============ FOOTER ============ -->
+<footer class="premium-footer">
+<div class="container">
+<div class="row g-4">
+<div class="col-lg-4 col-md-6">
+<div class="footer-brand"><span style="font-size:1.4rem;">✈</span> Dreamland Destination</div>
+<p style="font-size:0.9rem; max-width:300px;">Your trusted travel partner for unforgettable experiences across the globe. Plan, book, and travel with confidence.</p>
+<div class="social-icons">
+<a href="#"><i class="fab fa-facebook-f"></i></a>
+<a href="#"><i class="fab fa-twitter"></i></a>
+<a href="#"><i class="fab fa-instagram"></i></a>
+<a href="#"><i class="fab fa-youtube"></i></a>
+</div>
+</div>
+<div class="col-lg-2 col-md-6">
+<h5>Quick Links</h5>
+<a href="/">Home</a>
+<a href="/destinations/">Destinations</a>
+<a href="/packages/">Packages</a>
+<a href="/booking/">Book Now</a>
+</div>
+<div class="col-lg-3 col-md-6">
+<h5>Support</h5>
+<a href="/track-booking/">Track Booking</a>
+<a href="/login/">My Account</a>
+<a href="#">FAQ</a>
+<a href="#">Contact Us</a>
+</div>
+<div class="col-lg-3 col-md-6">
+<h5>Contact Info</h5>
+<p style="font-size:0.9rem; margin-bottom:8px;"><i class="fas fa-envelope me-2" style="color:var(--accent);"></i>info@dreamland.com</p>
+<p style="font-size:0.9rem; margin-bottom:8px;"><i class="fas fa-phone me-2" style="color:var(--accent);"></i>+91 98765 43210</p>
+<p style="font-size:0.9rem;"><i class="fas fa-map-marker-alt me-2" style="color:var(--accent);"></i>Mumbai, India</p>
+</div>
+</div>
+<div class="footer-bottom">
+<p class="mb-0">© 2026 Dreamland Destination. All Rights Reserved. | Made with ❤️ in India</p>
+</div>
+</div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

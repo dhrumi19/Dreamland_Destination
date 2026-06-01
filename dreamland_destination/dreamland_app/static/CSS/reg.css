@@ -1,0 +1,57 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Nunito', sans-serif;
+    background: linear-gradient(120deg,#2980b9,#8e44ad);
+    height: 100vh;
+}
+
+.wrapper {
+    width: 400px;
+    margin: 80px auto;
+    background: #fff;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}
+
+.logo h1 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.login-block h2 {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.input-grids {
+    display: flex;
+    flex-direction: column;
+}
+
+.input {
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+.btn-style {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    background: #2980b9;
+    color: white;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.btn-style:hover {
+    background: #1f6391;
+}
+
+.forgot-details {
+    margin-bottom: 15px;
+}

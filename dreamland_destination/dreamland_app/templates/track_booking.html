@@ -1,0 +1,214 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Track Booking | Dreamland Destination</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'CSS/style.css' %}">
+
+<style>
+.track-card {
+  max-width: 500px;
+  margin: 0 auto;
+  background: var(--white);
+  padding: 36px;
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-lg);
+}
+.result-card {
+  background: var(--white);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+}
+.result-header {
+  background: linear-gradient(135deg, var(--primary), var(--primary-light));
+  color: #fff;
+  padding: 24px;
+}
+.result-body { padding: 28px; }
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--light-gray);
+  font-size: 0.9rem;
+}
+.info-row:last-child { border-bottom: none; }
+.info-row .lbl { color: var(--text-light); }
+.info-row .val { font-weight: 600; }
+.package-img {
+  width: 100%; height: 200px;
+  object-fit: cover; border-radius: var(--radius-md);
+}
+.status-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 6px 16px;
+  border-radius: var(--radius-full);
+  font-weight: 600; font-size: 0.85rem;
+}
+.status-confirmed { background: var(--success-light); color: var(--success); }
+.status-pending { background: var(--warning-light); color: var(--warning); }
+.status-cancelled { background: var(--danger-light); color: var(--danger); }
+</style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg premium-navbar py-2">
+<div class="container">
+<a class="navbar-brand" href="/"><span class="brand-icon">✈</span> Dreamland</a>
+<button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+<span class="navbar-toggler-icon"></span>
+</button>
+<div class="collapse navbar-collapse" id="navMenu">
+<ul class="navbar-nav mx-auto">
+<li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+<li class="nav-item"><a class="nav-link" href="/packages/">Packages</a></li>
+<li class="nav-item"><a class="nav-link" href="/booking/">Book Now</a></li>
+<li class="nav-item"><a class="nav-link active" href="/track-booking/">Track Booking</a></li>
+</ul>
+<div class="d-flex gap-2">
+{% if request.session.user_id %}
+<a href="/dashboard/" class="nav-btn nav-btn-outline">Dashboard</a>
+<a href="/logout/" class="nav-btn nav-btn-accent">Logout</a>
+{% else %}
+<a href="/login/" class="nav-btn nav-btn-outline">Login</a>
+<a href="/signup/" class="nav-btn nav-btn-accent">Sign Up</a>
+{% endif %}
+</div>
+</div>
+</div>
+</nav>
+
+<!-- TRACK SEARCH -->
+<section class="py-5" style="background:var(--off-white); min-height: 50vh;">
+<div class="container">
+
+<div class="section-header animate-fadeInUp">
+<h2><i class="fas fa-search-location me-2" style="color:var(--accent);"></i>Track Your Booking</h2>
+<p>Enter your booking ID to view the status</p>
+<div class="accent-line"></div>
+</div>
+
+<div class="track-card animate-fadeInUp">
+<form method="post" class="premium-form">
+{% csrf_token %}
+<label class="form-label">Booking ID</label>
+<input type="number" name="booking_id" class="form-control mb-3" placeholder="e.g. 101" required>
+<button class="gradient-btn gradient-btn-primary btn-block" style="padding:13px;">
+<i class="fas fa-search me-2"></i>Track Booking
+</button>
+</form>
+</div>
+
+</div>
+</section>
+
+<!-- BOOKING RESULT -->
+{% if booking %}
+<section class="pb-5" style="background:var(--off-white);">
+<div class="container">
+<div class="result-card animate-fadeInUp" style="max-width:800px; margin:0 auto;">
+
+<div class="result-header">
+<div class="d-flex justify-content-between align-items-center">
+<div>
+<h5 style="color:#fff; margin-bottom:4px;">Booking #{{ booking.id }}</h5>
+<p style="color:rgba(255,255,255,0.7); margin:0; font-size:0.85rem;">{{ booking.package.package_name }}</p>
+</div>
+<span class="status-badge
+{% if booking.status == 'Confirmed' %}status-confirmed
+{% elif booking.status == 'Pending' %}status-pending
+{% else %}status-cancelled{% endif %}">
+<i class="fas fa-circle" style="font-size:0.5rem;"></i>{{ booking.status }}
+</span>
+</div>
+</div>
+
+<div class="result-body">
+<div class="row g-4">
+<div class="col-md-4">
+{% if booking.package.destination.image %}
+<img src="{{ booking.package.destination.image.url }}" class="package-img" alt="{{ booking.package.package_name }}">
+{% else %}
+<img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&q=80" class="package-img" alt="Package">
+{% endif %}
+</div>
+<div class="col-md-8">
+<div class="info-row">
+<span class="lbl"><i class="fas fa-user me-1"></i>Customer</span>
+<span class="val">{{ booking.user.name }}</span>
+</div>
+<div class="info-row">
+<span class="lbl"><i class="fas fa-box-open me-1"></i>Package</span>
+<span class="val">{{ booking.package.package_name }}</span>
+</div>
+<div class="info-row">
+<span class="lbl"><i class="fas fa-map-marker-alt me-1"></i>Destination</span>
+<span class="val">{{ booking.package.destination.destination_name }}</span>
+</div>
+<div class="info-row">
+<span class="lbl"><i class="fas fa-calendar-alt me-1"></i>Travel Date</span>
+<span class="val">{{ booking.travel_date }}</span>
+</div>
+<div class="info-row">
+<span class="lbl"><i class="fas fa-rupee-sign me-1"></i>Amount</span>
+<span class="val" style="color:var(--accent);">₹{{ booking.total_price }}</span>
+</div>
+</div>
+</div>
+
+<!-- Timeline -->
+<div style="background:var(--off-white); padding:24px; border-radius:var(--radius-md); margin:20px 0;">
+<h6 style="text-align:center; margin-bottom:16px; font-weight:600;">Booking Progress</h6>
+<div class="premium-timeline">
+<div class="timeline-step">
+<div class="timeline-dot active">1</div>
+<p>Booked</p>
+</div>
+<div class="timeline-step">
+<div class="timeline-dot {% if booking.status == 'Confirmed' or booking.status == 'Completed' %}active{% endif %}">2</div>
+<p>Confirmed</p>
+</div>
+<div class="timeline-step">
+<div class="timeline-dot {% if booking.status == 'Completed' %}active{% endif %}">3</div>
+<p>Completed</p>
+</div>
+</div>
+</div>
+
+<!-- Action Buttons -->
+<div class="d-flex flex-wrap gap-2 justify-content-center">
+<a href="/invoice/{{ booking.id }}/" class="gradient-btn gradient-btn-success" style="font-size:0.85rem; padding:10px 20px;">
+<i class="fas fa-file-invoice me-1"></i>Download Invoice
+</a>
+{% if booking.status == "Pending" or booking.status == "Confirmed" %}
+<a href="/cancel-booking/{{ booking.id }}/" class="gradient-btn gradient-btn-danger" style="font-size:0.85rem; padding:10px 20px;">
+<i class="fas fa-times-circle me-1"></i>Cancel Booking
+</a>
+{% endif %}
+</div>
+
+</div>
+</div>
+</div>
+</section>
+{% endif %}
+
+<footer class="premium-footer">
+<div class="container">
+<div class="footer-bottom" style="margin-top:0;">
+<p class="mb-0">© 2026 Dreamland Destination. All Rights Reserved.</p>
+</div>
+</div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

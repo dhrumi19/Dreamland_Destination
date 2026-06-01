@@ -1,0 +1,183 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Booking Confirmation | Dreamland Destination</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'CSS/style.css' %}">
+
+<style>
+.success-card {
+  max-width: 750px;
+  margin: 0 auto;
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  box-shadow: var(--shadow-xl);
+  background: var(--white);
+}
+.success-header {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: #fff;
+  padding: 32px;
+  text-align: center;
+}
+.success-header .check-icon {
+  width: 64px; height: 64px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.2);
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 16px;
+  font-size: 1.8rem;
+  animation: pulse 2s infinite;
+}
+.success-body { padding: 32px; }
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--light-gray);
+  font-size: 0.9rem;
+}
+.detail-row:last-child { border-bottom: none; }
+.detail-row .label { color: var(--text-light); }
+.detail-row .value { font-weight: 600; color: var(--text); }
+.package-img {
+  width: 100%; height: 200px;
+  object-fit: cover; border-radius: var(--radius-md);
+}
+</style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg premium-navbar py-2">
+<div class="container">
+<a class="navbar-brand" href="/"><span class="brand-icon">✈</span> Dreamland</a>
+<div class="d-flex gap-2">
+<a href="/" class="nav-btn nav-btn-outline">Home</a>
+<a href="/packages/" class="nav-btn nav-btn-outline">Packages</a>
+<a href="/track-booking/" class="nav-btn nav-btn-accent">Track Booking</a>
+</div>
+</div>
+</nav>
+
+<!-- SUCCESS CONTENT -->
+<section class="py-5" style="background: var(--off-white); min-height: 80vh;">
+<div class="container">
+
+{% if booking %}
+<div class="success-card animate-fadeInUp">
+
+<div class="success-header">
+<div class="check-icon"><i class="fas fa-check"></i></div>
+<h3 style="color:#fff; font-weight:700; margin-bottom:4px;">Booking Confirmed!</h3>
+<p style="color:rgba(255,255,255,0.85); margin:0;">Your dream trip is now reserved ✈️</p>
+</div>
+
+<div class="success-body">
+<div class="row g-4 mb-4">
+<div class="col-md-5">
+{% if booking.package.destination.image %}
+<img src="{{ booking.package.destination.image.url }}" class="package-img" alt="{{ booking.package.package_name }}">
+{% else %}
+<img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&q=80" class="package-img" alt="Package">
+{% endif %}
+</div>
+<div class="col-md-7">
+<h4 style="margin-bottom:4px;">{{ booking.package.package_name }}</h4>
+<p style="color:var(--text-light); margin-bottom:16px; font-size:0.9rem;">
+<i class="fas fa-map-marker-alt me-1" style="color:var(--accent);"></i>{{ booking.package.destination.destination_name }}
+</p>
+
+<div class="detail-row">
+<span class="label"><i class="fas fa-clock me-1"></i>Duration</span>
+<span class="value">{{ booking.package.duration }}</span>
+</div>
+<div class="detail-row">
+<span class="label"><i class="fas fa-calendar-alt me-1"></i>Travel Date</span>
+<span class="value">{{ booking.travel_date }}</span>
+</div>
+<div class="detail-row">
+<span class="label"><i class="fas fa-users me-1"></i>Travelers</span>
+<span class="value">{{ booking.total_people }}</span>
+</div>
+<div class="detail-row">
+<span class="label"><i class="fas fa-rupee-sign me-1"></i>Total Paid</span>
+<span class="value" style="color:var(--accent); font-size:1.1rem;">₹{{ booking.total_price }}</span>
+</div>
+<div class="detail-row">
+<span class="label"><i class="fas fa-hashtag me-1"></i>Booking ID</span>
+<span class="value">#{{ booking.id }}</span>
+</div>
+</div>
+</div>
+
+<!-- Timeline -->
+<div style="background:var(--off-white); padding:24px; border-radius:var(--radius-md); margin-bottom:24px;">
+<h6 style="text-align:center; margin-bottom:20px; font-weight:600;">Booking Progress</h6>
+<div class="premium-timeline">
+<div class="timeline-step">
+<div class="timeline-dot active">1</div>
+<p>Booked</p>
+</div>
+<div class="timeline-step">
+<div class="timeline-dot active">2</div>
+<p>Payment Done</p>
+</div>
+<div class="timeline-step">
+<div class="timeline-dot active">3</div>
+<p>Trip Confirmed</p>
+</div>
+</div>
+</div>
+
+<!-- Action Buttons -->
+<div class="d-flex flex-wrap gap-2 justify-content-center">
+<a href="/invoice/{{ booking.id }}/" class="gradient-btn gradient-btn-success" style="font-size:0.85rem; padding:10px 20px;">
+<i class="fas fa-file-invoice me-1"></i>Download Invoice
+</a>
+<a href="/track-booking/" class="gradient-btn gradient-btn-primary" style="font-size:0.85rem; padding:10px 20px;">
+<i class="fas fa-search-location me-1"></i>Track Booking
+</a>
+<a href="/feedback/{{ booking.id }}/" class="gradient-btn gradient-btn-gold" style="font-size:0.85rem; padding:10px 20px;">
+<i class="fas fa-star me-1"></i>Give Feedback
+</a>
+<a href="/ask-question/{{ booking.id }}/" class="gradient-btn gradient-btn-secondary" style="font-size:0.85rem; padding:10px 20px;">
+<i class="fas fa-question-circle me-1"></i>Ask Question
+</a>
+<a href="/" class="gradient-btn gradient-btn-outline" style="font-size:0.85rem; padding:10px 20px;">
+<i class="fas fa-home me-1"></i>Go Home
+</a>
+</div>
+
+</div>
+</div>
+
+{% else %}
+<div class="text-center py-5 animate-fadeInUp">
+<i class="fas fa-exclamation-triangle" style="font-size:3rem; color:var(--warning); margin-bottom:16px;"></i>
+<h4>Booking Not Found</h4>
+<p style="color:var(--text-light);">We couldn't find your booking details.</p>
+<a href="/" class="gradient-btn gradient-btn-primary mt-3">Go to Homepage</a>
+</div>
+{% endif %}
+
+</div>
+</section>
+
+<footer class="premium-footer">
+<div class="container">
+<div class="footer-bottom" style="margin-top:0;">
+<p class="mb-0">© 2026 Dreamland Destination. All Rights Reserved.</p>
+</div>
+</div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

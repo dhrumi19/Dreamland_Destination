@@ -11,6 +11,6 @@ import os
 
 from django.core.wsgi import get_wsgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'dreamland_destination.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'dreamland_destination.dreamland_destination.settings')
 
 application = get_wsgi_application()
